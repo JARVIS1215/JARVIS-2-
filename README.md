@@ -1,194 +1,20 @@
-# JARVIS-2-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>J.A.R.V.I.S Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e2f;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #29293d;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-    }
-    h1 {
-      text-align: center;
-    }
-    .section {
-      margin-bottom: 20px;
-      padding: 15px;
-      background: #383850;
-      border-radius: 5px;
-    }
-    .section h2 {
-      margin-top: 0;
-    }
-    input, button {
-      padding: 10px;
-      margin: 5px;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      background: #4caf50;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    #video {
-      width: 100%;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1>J.A.R.V.I.S Dashboard</h1>
-    
-    <!-- Voice Command Section -->
-    <div class="section">
-      <h2>Voice Commands</h2>
-      <button id="startListening">Start Listening</button>
-      <p id="voiceOutput">Say something...</p>
-    </div>
-    
-    <!-- Weather Section -->
-    <div class="section">
-      <h2>Weather</h2>
-      <input type="text" id="cityInput" placeholder="Enter city name">
-      <button id="getWeather">Get Weather</button>
-      <p id="weatherOutput">Weather info will appear here.</p>
-    </div>
-    
-    <!-- Reminder Section -->
-    <div class="section">
-      <h2>Set Reminder</h2>
-      <input type="text" id="reminderMessage" placeholder="Reminder message">
-      <input type="number" id="reminderTime" placeholder="Time (seconds)">
-      <button id="setReminder">Set Reminder</button>
-      <p id="reminderOutput">No reminders set.</p>
-    </div>
-    
-    <!-- Light Control Section -->
-    <div class="section">
-      <h2>Light Control</h2>
-      <button onclick="controlLight('on')">Turn On Lights</button>
-      <button onclick="controlLight('off')">Turn Off Lights</button>
-      <p id="lightStatus">Lights are off.</p>
-    </div>
-    
-    <!-- Face Detection Section -->
-    <div class="section">
-      <h2>Face Detection</h2>
-      <video id="video" autoplay muted></video>
-      <canvas id="canvas"></canvas>
-      <p id="faceStatus">Face detection is active.</p>
-    </div>
-  </div>
+# JARVIS-2
 
-  <script>
-    // Voice Commands
-    const voiceButton = document.getElementById("startListening");
-    const voiceOutput = document.getElementById("voiceOutput");
-    voiceButton.addEventListener("click", () => {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      recognition.lang = "en-US";
-      recognition.start();
-      recognition.onresult = (event) => {
-        const command = event.results[0][0].transcript;
-        voiceOutput.textContent = `You said: ${command}`;
-      };
-      recognition.onerror = () => {
-        voiceOutput.textContent = "Error in voice recognition.";
-      };
-    });
+A fully interactive voice-assisted dashboard inspired by Iron Man's J.A.R.V.I.S. This dashboard integrates multiple functionalities like voice commands, weather updates, reminders, light control, and face detection. 
 
-    // Weather
-    const weatherButton = document.getElementById("getWeather");
-    const weatherOutput = document.getElementById("weatherOutput");
-    weatherButton.addEventListener("click", async () => {
-      const city = document.getElementById("cityInput").value;
-      const apiKey = "your_openweathermap_api_key";
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+## 🌟 Features
+- **Voice Commands**: Use your voice to interact with the assistant.
+- **Weather Updates**: Fetches live weather information for any city.
+- **Reminders**: Set reminders with custom messages and durations.
+- **Light Control**: Simulates IoT control for turning lights on and off.
+- **Face Detection**: Real-time face detection using TensorFlow.js and BlazeFace.
 
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.cod === 200) {
-          weatherOutput.textContent = `Weather in ${city}: ${data.weather[0].description}, ${data.main.temp}°C.`;
-        } else {
-          weatherOutput.textContent = "City not found.";
-        }
-      } catch (error) {
-        weatherOutput.textContent = "Error fetching weather data.";
-      }
-    });
+## 🚀 Live Demo
+Check out the live demo here: [J.A.R.V.I.S Dashboard](https://JARVIS1215.github.io/jarvis-dashboard/)
 
-    // Reminders
-    const reminderButton = document.getElementById("setReminder");
-    const reminderOutput = document.getElementById("reminderOutput");
-    reminderButton.addEventListener("click", () => {
-      const message = document.getElementById("reminderMessage").value;
-      const time = parseInt(document.getElementById("reminderTime").value) * 1000;
+## 🛠️ Installation
 
-      reminderOutput.textContent = `Reminder set: "${message}" in ${time / 1000} seconds.`;
-      setTimeout(() => {
-        alert(`Reminder: ${message}`);
-        reminderOutput.textContent = "Reminder triggered!";
-      }, time);
-    });
+1. Clone the repository:
+   ```bash
+   git clone https://github.com//JARVIS1215>/jarvis-dashboard.git
 
-    // Light Control
-    function controlLight(action) {
-      const lightStatus = document.getElementById("lightStatus");
-      if (action === "on") {
-        lightStatus.textContent = "Lights are on.";
-      } else {
-        lightStatus.textContent = "Lights are off.";
-      }
-    }
-
-    // Face Detection
-    const video = document.getElementById("video");
-    async function setupCamera() {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { width: 640, height: 480 },
-      });
-      video.srcObject = stream;
-    }
-
-    async function detectFaces() {
-      const model = await blazeface.load();
-      const canvas = document.getElementById("canvas");
-      const ctx = canvas.getContext("2d");
-
-      setInterval(async () => {
-        const predictions = await model.estimateFaces(video, false);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        predictions.forEach((prediction) => {
-          const [x, y, width, height] = prediction.topLeft.concat(prediction.bottomRight);
-          ctx.strokeStyle = "red";
-          ctx.lineWidth = 2;
-          ctx.strokeRect(x, y, width - x, height - y);
-        });
-      }, 100);
-    }
-
-    setupCamera().then(() => detectFaces());
-  </script>
-</body>
-</html>
